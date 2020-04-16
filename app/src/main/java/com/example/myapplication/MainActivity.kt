@@ -22,6 +22,7 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         observeData()
+
     }
 
     //https://www.youtube.com/watch?v=RJCoCk1YbzM (min:15)
@@ -33,7 +34,10 @@ class MainActivity : BaseActivity() {
                 }
                 is Resource.Success -> {
                     showProgressVisibility(false)
-                    textView.text = it.data.toString()
+
+                    textView.text = it.data.tittle.toString()
+                    textView2.text = it.data.version.toString()
+                    textView3.text = it.data.color.toString()
                 }
                 is Resource.Failure -> {
                     Toast.makeText(this,"Ocurrio un error: ${it.exception.message}",Toast.LENGTH_LONG)

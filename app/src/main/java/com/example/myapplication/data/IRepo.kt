@@ -1,7 +1,10 @@
 package com.example.myapplication.data
 
+import com.example.myapplication.model.App
 import com.example.myapplication.vo.Resource
+import kotlinx.coroutines.flow.Flow
 
 interface IRepo {
-    suspend fun getVersionAppRepo(): Resource<Int>
+    suspend fun getAppObjRepo(): Flow<Resource<App>>
+
 }
