@@ -11,13 +11,12 @@ class MainViewModel(useCase: IUseCase): ViewModel() {
     val versionApp = liveData {
         emit(Resource.Loading())
         try {
-            //val version = useCase.getAppObj()
-            //emit(version)
-            useCase.getAppObj().collect {
-                emit(it)
-            }
+            val version = useCase.getAppObj()
+            emit(version)
         }catch (e: Exception){
             emit(Resource.Failure(e))
         }
     }
+
+
 }

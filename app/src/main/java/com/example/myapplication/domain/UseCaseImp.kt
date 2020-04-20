@@ -6,7 +6,5 @@ import com.example.myapplication.vo.Resource
 import kotlinx.coroutines.flow.Flow
 
 class UseCaseImp (private val repo: IRepo): IUseCase {
-    override suspend fun getAppObj(): Flow<Resource<App>> = repo.getAppObjRepo()
-
-
+    override suspend fun getAppObj(): Resource<App> = repo.getAppObjRepo()
 }
