@@ -1,6 +1,7 @@
 package com.example.myapplication.data
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDAO {
@@ -18,6 +19,6 @@ interface UserDAO {
 
         @Query("SELECT * FROM product_data_table")
         //fun loadAllProduct(): LiveData<List<Product>>
-        suspend fun loadAllProduct(): List<User>
+        fun loadAllProduct(): Flow<List<User>>
         //suspend fun loadAllProduct(): Resource<MutableList<User>>
     }

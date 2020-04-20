@@ -7,6 +7,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication.base.BaseActivity
 import com.example.myapplication.data.RepoImp
+import com.example.myapplication.data.UserDatabase
+import com.example.myapplication.data.UserRepository
 import com.example.myapplication.domain.UseCaseImp
 import com.example.myapplication.viewmodel.MainViewModel
 import com.example.myapplication.viewmodel.MainViewModelFactory
@@ -15,16 +17,32 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
 
-    private val viewModel by lazy { ViewModelProvider(this,MainViewModelFactory(UseCaseImp(RepoImp()))).get(MainViewModel::class.java) }
-
+    //private val viewModel by lazy { ViewModelProvider(this,MainViewModelFactory(UseCaseImp(RepoImp()))).get(MainViewModel::class.java) }
+    lateinit var userViewModel: MainViewModel
     override fun getViewIdD(): Int = R.layout.activity_main
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        observeData()
+        val dao = UserDatabase.getInstance(application).userDAO
+        val repository = UserRepository(dao)
+        val factory = MainViewModelFactory(repository)
+        userViewModel = ViewModelProvider(this,factory).get(MainViewModel::class.java)
+
+        buttonCon.setOnClickListener {
+            userViewModel.ingreso()
+        }
+
+        userViewModel.usuarios.observe(this, Observer {
+            for (item in it){
+                Log.e("USUARIOS LOG: ","id: ${item.id}, name: ${item.name}, price: ${item.price}")
+            }
+        })
+
+
+        //observeData()
 
     }
-
+    /*
     //https://www.youtube.com/watch?v=RJCoCk1YbzM (min:15)
     private fun observeData(){
         viewModel.versionApp.observe(this, Observer {
@@ -46,6 +64,6 @@ class MainActivity : BaseActivity() {
                 }
             }
         })      //Activity: this, Fragment: ViewLyfecycleOwner
-    }
+    }*/
 
 }

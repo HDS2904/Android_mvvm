@@ -1,11 +1,14 @@
 package com.example.myapplication.data
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+
 //import io.opencensus.resource.Resource
 
 class UserRepository(private val dao: UserDAO) {
 
-    suspend fun loadAll(): List<User>{
-        return  dao.loadAllProduct()
+    fun loadAll(): Flow<List<User>> {
+        return dao.loadAllProduct()
     }
 
     //val products = dao.loadAllProduct()
