@@ -5,6 +5,6 @@ import com.example.myapplication.vo.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface IRepo {
-    suspend fun getAppObjRepo(): Resource<App>
+    suspend fun getAppObjRepo(): Resource<List<User>>
 
 }

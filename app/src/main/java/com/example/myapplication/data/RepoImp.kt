@@ -14,7 +14,8 @@ import kotlinx.coroutines.tasks.await
 class RepoImp: IRepo {
 
     @ExperimentalCoroutinesApi
-    override suspend fun getAppObjRepo(): Resource<App> {
+    override suspend fun getAppObjRepo(): Resource<List<User>> {
+        /*
         val resultData = FirebaseFirestore.getInstance()
             .collection("setting")
             .document("app")
@@ -26,7 +27,13 @@ class RepoImp: IRepo {
         val dat2 = resultData.getString("tittle")
         val app = App(dat1!!.toInt(), dat2.toString(), dat3!!.toInt())
 
-        return Resource.Success(app)
+        return Resource.Success(app)*/
+        val r1 = User(0,"usuario1","1.25")
+
+        var res = arrayListOf<User>()
+
+        res.add(r1)
+        return Resource.Success(res)
     }
 
 }
