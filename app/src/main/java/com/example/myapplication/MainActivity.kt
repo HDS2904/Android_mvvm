@@ -5,47 +5,58 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.base.BaseActivity
-import com.example.myapplication.data.RepoImp
+import com.example.myapplication.data.User
 import com.example.myapplication.data.UserDatabase
 import com.example.myapplication.data.UserRepository
-import com.example.myapplication.domain.UseCaseImp
 import com.example.myapplication.viewmodel.MainViewModel
 import com.example.myapplication.viewmodel.MainViewModelFactory
 import com.example.myapplication.vo.Resource
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.items_list.*
 
 class MainActivity : BaseActivity() {
 
-    //private val viewModel by lazy { ViewModelProvider(this,MainViewModelFactory(UseCaseImp(RepoImp()))).get(MainViewModel::class.java) }
-    lateinit var userViewModel: MainViewModel
+    private val userViewModel: MainViewModel by lazy {
+        ViewModelProvider(this,MainViewModelFactory(UserRepository(UserDatabase
+            .getInstance(application).userDAO)))
+            .get(MainViewModel::class.java)
+    }
+
     override fun getViewIdD(): Int = R.layout.activity_main
+
+    private lateinit var adapter:MainAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val dao = UserDatabase.getInstance(application).userDAO
-        val repository = UserRepository(dao)
-        val factory = MainViewModelFactory(repository)
-        userViewModel = ViewModelProvider(this,factory).get(MainViewModel::class.java)
 
-        buttonCon.setOnClickListener {
-            userViewModel.ingreso()
+        adapter = MainAdapter(this)
+
+        buttonIng.setOnClickListener {
+            val name = editTextName.text.toString()
+            val precio = editTextPrice.text.toString()
+            userViewModel.ingreso(User(0,name,precio))
+            editTextName.text = ""
+            editTextPrice.text = ""
         }
 
-        userViewModel.usuarios.observe(this, Observer {
-            for (item in it){
-                Log.e("USUARIOS LOG: ","id: ${item.id}, name: ${item.name}, price: ${item.price}")
-            }
-        })
+        buttonDel.setOnClickListener {
+            userViewModel.deleteAll()
+        }
+
+        recyclerViewItems.layoutManager = LinearLayoutManager(this)
+        recyclerViewItems.adapter = adapter
+
+        observando()
 
 
-        //observeData()
 
     }
-    /*
-    //https://www.youtube.com/watch?v=RJCoCk1YbzM (min:15)
-    private fun observeData(){
-        viewModel.versionApp.observe(this, Observer {
+
+    fun observando(){
+        userViewModel.usuarios.observe(this, Observer {
+            showProgressVisibility(true)
             when(it){
                 is Resource.Loading -> {
                     showProgressVisibility(true)
@@ -53,7 +64,11 @@ class MainActivity : BaseActivity() {
                 is Resource.Success -> {
                     showProgressVisibility(false)
 
-                    Log.e("RESTTT",it.data.toString())
+                    adapter.setListData(it.data)
+                    adapter.notifyDataSetChanged()
+                    for (item in it.data){
+                        Log.e("USUARIOS LOG: ","id: ${item.id}, name: ${item.name}, price: ${item.price}")
+                    }
 
                     //textView.text = it.data.tittle.toString()
                     //textView2.text = it.data.version.toString()
@@ -63,7 +78,9 @@ class MainActivity : BaseActivity() {
                     Toast.makeText(this,"Ocurrio un error: ${it.exception.message}",Toast.LENGTH_LONG)
                 }
             }
-        })      //Activity: this, Fragment: ViewLyfecycleOwner
-    }*/
+
+        })
+    }
+    //https://www.youtube.com/watch?v=RJCoCk1YbzM (min:15)
 
 }

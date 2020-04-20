@@ -24,21 +24,38 @@ class MainViewModel(private val repository: UserRepository): ViewModel() {
         }
     }*/
 
-    val usuarios = liveData {
-        repository.loadAll().collect {
-            emit(it)
-        }
+    val usuarios = liveData{
+        var re: Resource<List<User>>
+        emit(Resource.Loading())
+            try {
+                repository.users.collect {
+                    re = Resource.Success(it)
+                    emit(re)
+                }
+            }catch (e: Exception){
+                emit(Resource.Failure(e))
+            }
+
     }
     /*
     val usuarios: Flow<List<User>> = flow {
         emit(repository.loadAll())
     }*/
 
-    fun ingreso(){
+    fun ingreso(user: User){
 
         viewModelScope.launch {
                 //repository.deleteAll()
-                repository.insert(User(0,"siEntro","45.5"))
+                repository.insert(User(0,user.name,user.price))
+
+        }
+
+    }
+
+    fun deleteAll(){
+        viewModelScope.launch {
+            //repository.deleteAll()
+            repository.deleteAll()
 
         }
 
